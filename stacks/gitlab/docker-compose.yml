@@ -1,0 +1,25 @@
+version: '3'
+services:
+  gitlab:
+    image: docker.service:5000/daex-meta/gitlab
+    deploy:
+      placement:
+        constraints:
+          - node.labels.gitlab == true      
+    hostname: gitlab
+    environment:
+      - GITLAB_ROOT_PASSWORD=password      
+    volumes:
+      - config:/etc/gitlab
+      - logs:/var/log/gitlab
+      - data:/var/opt/gitlab
+    networks:
+      - docproc2
+volumes:
+  config:
+  logs:
+  data:        
+networks:
+  docproc2:
+    external: true
+

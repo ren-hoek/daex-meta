@@ -1,0 +1,71 @@
+node {
+    stage('cp') {
+        sh 'cp -r /var/jenkins_home/daex-meta/* .'
+    }
+      stage('Build Daex: dedgbase') {
+        dir('stacks') {
+             sh './build_image.py docker.service:5000/daex-meta/jupyterhub daex/jupyterhub/'
+       }
+    }
+    
+    stage('Build Daex: jupyterhub') {
+        dir('stacks') {
+             sh './build_image.py  docker.service:5000/daex-meta/jupyterhub daex/jupyterhub/'
+       }
+    }
+    
+    stage('Build Daex: rbase') {
+        dir('stacks') {
+             sh './build_image.py  docker.service:5000/daex-meta/rbase daex/rbase/'
+       }
+    }
+
+    stage('Build Daex: rstudio') {
+        dir('stacks') {
+             sh './build_image.py  docker.service:5000/daex-meta/rstudio daex/rstudio/'
+       }
+    }
+
+    stage('Build Daex: shiny') {
+        dir('stacks') {
+             sh './build_image.py  docker.service:5000/daex-meta/shiny daex/shiny/'
+       }
+    }
+    
+
+    stage('Push Daex: dedgbase') {
+        dir('stacks') {
+             sh './push_image.py docker.service:5000/daex-meta/dedgbase'
+       }
+    }
+
+    stage('Push Daex: jupyterhub') {
+        dir('stacks') {
+             sh './push_image.py docker.service:5000/daex-meta/jupyterhub'
+       }
+    }
+
+    stage('Push Daex: rbase') {
+        dir('stacks') {
+             sh './push_image.py docker.service:5000/daex-meta/rbase'
+       }
+    }
+
+    stage('Push Daex: rstudio') {
+        dir('stacks') {
+             sh './push_image.py docker.service:5000/daex-meta/rstudio'
+       }
+    }
+
+    stage('Push Daex: shiny') {
+        dir('stacks') {
+             sh './push_image.py docker.service:5000/daex-meta/shiny'
+       }
+    }
+
+    stage('Deploy Daex') {
+        dir('stacks') {
+             sh './deploy_stack.py daex daex/docker-compose.yml'
+       }
+    }
+}

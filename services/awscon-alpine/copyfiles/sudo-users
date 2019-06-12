@@ -1,0 +1,1 @@
+aws ALL=(root) NOPASSWD:ALL

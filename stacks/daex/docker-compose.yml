@@ -1,0 +1,47 @@
+version: '3'
+services:
+  rstudio:
+    image: docker.service:5000/daex-meta/rstudio
+    deploy:
+      placement:
+        constraints:
+          - node.labels.daex == true      
+    hostname: rstudio 
+    volumes:
+      - /etc:/opt/etc:ro
+      - home:/home
+    networks:
+      - docproc2
+  jupyter:
+    image: docker.service:5000/daex-meta/jupyterhub
+    deploy:
+      placement:
+        constraints:
+          - node.labels.daex == true      
+    hostname: jupyterhub
+    volumes:
+      - /etc:/opt/etc:ro
+      - home:/home
+    networks:
+      - docproc2
+    ports:
+      - 8000:8000
+  shiny:
+    image: docker.service:5000/daex-meta/shiny
+    deploy:
+      placement:
+        constraints:
+          - node.labels.daex == true      
+    hostname: shiny
+    volumes:
+     - apps:/srv/shiny-server/
+     - logs:/var/log/shiny-server/
+    networks:
+      - docproc2
+volumes:
+  home:
+  apps:
+  logs:
+networks:
+  docproc2:
+    external: true

@@ -1,0 +1,27 @@
+version: '3'
+services:
+  mongo:
+    image: docker.service:5000/mongo
+    deploy:
+      placement:
+        constraints:
+          - node.labels.mongo == true      
+    hostname: mongo
+    volumes:
+      - data:/data/db
+    networks:
+      - docproc2
+  mongo-express:
+    image: docker.service:5000/mongo-express
+    deploy:
+      placement:
+        constraints:
+          - node.labels.mongo == true      
+    hostname: mongo-express
+    networks:
+      - docproc2
+volumes:
+  data:      
+networks:
+  docproc2:
+    external: true

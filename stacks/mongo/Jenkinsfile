@@ -1,0 +1,37 @@
+node {
+    stage('cp') {
+        sh 'cp -r /var/jenkins_home/daex-meta/* .'
+    }
+    
+    stage('pull mongo') {
+        dir('stacks') {
+            sh './pull_image.py mongo:latest'
+            sh './tag_image.py mongo:latest docker.service:5000/mongo'
+        }
+    }
+
+    stage('pull mongo-express') {
+        dir('stacks') {
+            sh './pull_image.py mongo-express:latest'
+            sh './tag_image.py mongo-express:latest docker.service:5000/mongo-express'
+        }
+    }
+    
+    stage('push mongo') {
+        dir('stacks') {
+            sh './push_image.py docker.service:5000/mongo'
+        }
+    }
+
+    stage('push mongo-express') {
+        dir('stacks') {
+            sh './push_image.py docker.service:5000/mongo-express'
+        }
+    }
+
+    stage('deploy mongo') {
+        dir('stacks') {
+             sh './deploy_stack.py mongo mongo/docker-compose.yml'
+       }
+    }
+}

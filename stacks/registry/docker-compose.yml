@@ -1,0 +1,28 @@
+version: '3'
+services:
+  registry:
+    image: registry:2
+    deploy:
+      placement:
+        constraints:
+          - node.labels.registry == true
+    networks:
+      - docproc2      
+    ports:
+      - 5000:5000
+    environment:
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/docker.service.crt
+      REGISTRY_HTTP_TLS_KEY: /certs/docker.service.key
+      REGISTRY_AUTH: "htpasswd"
+      REGISTRY_AUTH_HTPASSWD_PATH: "/auth/htpasswd"
+      REGISTRY_AUTH_HTPASSWD_REALM: "Registry Realm"
+    volumes:
+      - data:/var/lib/registry
+      - certs:/certs
+volumes:
+  data:
+  certs:
+networks:
+  docproc2:
+    external: true
+  

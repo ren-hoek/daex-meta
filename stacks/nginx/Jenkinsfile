@@ -1,0 +1,31 @@
+node {
+    stage('cp') {
+        sh 'cp -r /var/jenkins_home/daex-meta/* .'
+    }
+    
+    stage('build nginx') {
+        dir('stacks') {
+            sh './build_image.py docker.service:5000/daex-meta/nginx nginx/'
+        }
+    }
+    
+    stage('push nginx') {
+        dir('stacks') {
+            sh './push_image.py docker.service:5000/daex-meta/nginx'
+        }
+    }
+
+    stage('deploy nginx') {
+        dir('stacks') {
+            sh './deploy_stack.py nginx nginx/docker-compose.yml'
+        }
+    }
+
+    stage('Add conf and html') {
+        dir('stacks') {
+            sh './add_folder.py nginx_nginx /etc/ nginx/nginx'
+            sh './add_folder.py nginx_nginx /usr/share/nginx/ nginx/html'
+            sh './redeploy_stack.py nginx nginx/docker-compose.yml'
+        }
+    }
+}

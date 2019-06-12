@@ -1,0 +1,6 @@
+[user]
+	name = ren-hoek
+	email = ren-hoek@users.noreply.github.com
+[credential]
+	helper = !aws --profile codecommit codecommit credential-helper $@
+	UseHttpPath = true
