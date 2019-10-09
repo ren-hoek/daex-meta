@@ -1,0 +1,36 @@
+node {
+    stage('cp') {
+        sh 'cp -r /var/jenkins_home/daex-meta/* .'
+    }
+    
+    stage('pull redis') {
+        dir('stacks') {
+            sh './pull_image.py redis:latest'
+            sh './tag_image.py redis:latest docker.service:5000/redis'
+        }
+    }
+    
+    stage('build rqdash') {
+        dir('stacks') {
+            sh './build_image.py docker.service:5000/daex-meta/rqdash redis/'
+        }
+    }
+    
+    stage('push redis') {
+        dir('stacks') {
+            sh './push_image.py docker.service:5000/redis'
+        }
+    }
+
+    stage('push rqdash') {
+        dir('stacks') {
+            sh './push_image.py docker.service:5000/daex-meta/rqdash'
+        }
+    }
+    
+    stage('deploy redis') {
+        dir('stacks') {
+             sh './deploy_stack.py redis redis/docker-compose.yml'
+       }
+    }
+}

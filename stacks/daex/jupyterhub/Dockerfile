@@ -1,4 +1,4 @@
-FROM docker.service:5000/daex-meta/dedgbase
+FROM docker.service:5000/daex-meta/daexbase
 RUN yum -y install nodejs && \
     npm install -g configurable-http-proxy
 RUN pip install --no-cache-dir -U notebook jupyterhub jupyterlab virtualenv && \

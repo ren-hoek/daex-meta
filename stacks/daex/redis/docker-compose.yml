@@ -1,7 +1,7 @@
 version: '3'
 services:
   redis:
-    image: docker.service:5000/redis:latest
+    image: docker.service:5000/redis
     deploy:
       placement:
         constraints:
@@ -12,7 +12,7 @@ services:
     networks:
       - docproc2
   rqdash:
-    image: docker.service:5000/daex-meta/rqdash:latest
+    image: docker.service:5000/daex-meta/rqdash
     deploy:
       placement:
         constraints:

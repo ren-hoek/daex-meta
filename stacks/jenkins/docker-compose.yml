@@ -1,7 +1,7 @@
 version: '3'
 services:
   jenkins:
-    image: docker.service:5000/daex-meta/jenkins:lts
+    image: docker.service:5000/daex-meta/jenkins
     hostname: jenkins
     volumes: 
       - home:/var/jenkins_home

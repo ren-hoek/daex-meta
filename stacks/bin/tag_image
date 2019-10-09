@@ -2,19 +2,18 @@
 import sys
 from pyport import swarm as sw
 
-def drop_blank_tags(i):
-    return list(filter(lambda x: x['RepoTags'] != None, i))
 
-token = sw.generate_token('admin', 'password')
+port_api = sw.create_api_string(sys.argv, 2)
 
-images = drop_blank_tags(sw.list_images(token))
-
+token = sw.generate_token('admin', 'password', port_api)
+images = sw.drop_blank_tags(sw.list_images(token, s = port_api))
 img_id = list(map(lambda x: x['Id'], filter(lambda x: sys.argv[1] in x['RepoTags'], images)))[0]
 
 tag = sw.tag_image(
     token,
     img_id,
-    sys.argv[2]
+    sys.argv[2],
+    s = port_api
 )
 
 print(tag.text)
