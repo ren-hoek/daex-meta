@@ -16,5 +16,5 @@ RUN apt-get update && \
     usermod -aG docker jenkins
 RUN apt-get -y install python3-pip && \
      pip3 install -U pip && \
-     pip3.5 install requests
+     pip3.5 install -i https://test.pypi.org/simple/ pyport
 USER jenkins
