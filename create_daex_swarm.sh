@@ -1,5 +1,20 @@
 #!/bash
 
+# Set up swarm
+docker swarm init
+./network2.sh
+./label_node.sh
+
+# Create and deploy portainer
+cd stacks/portainer
+make build
+make deploy
+
+# executor container
+
+cd ../
+bin/init_admin password localhost
+
 # Install requests for pyport
 pip3 install -i https://test.pypi.org/simple/ pyport
 cd /home/gavin/Projects/daex-meta/stacks
@@ -27,6 +42,8 @@ deploy_stack registry registry/docker-compose.yml
 # Create and deploy Gitlab
 build_image docker.service:5000/daex-meta/gitlab gitlab/
 deploy_stack gitlab gitlab/docker-compose.yml
+
+# Jenkins build
 
 # Create and deploy RQ
 pull_image redis:latest
