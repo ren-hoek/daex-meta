@@ -5,10 +5,8 @@ pip3 install -i https://test.pypi.org/simple/ pyport
 cd /home/gavin/Projects/daex-meta/stacks
 
 # Set up Jenkins
-# build_image docker.service:5000/daex-meta/jenkins jenkins/
-# deploy_stack.py jenkins jenkins/docker-compose.yml
-# Additional command line setup
-# remove_stack jenkins localhost
+build_image docker.service:5000/daex-meta/jenkins jenkins/
+deploy_stack jenkins jenkins/docker-compose.yml
 
 # Create and deploy secure registry
 # cd registry

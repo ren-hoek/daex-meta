@@ -1,7 +1,10 @@
-version: '3'
+version: '3.1'
 services:
   jenkins:
     image: docker.service:5000/daex-meta/jenkins
+    secrets:
+      - jenkins_user
+      - jenkins_pass
     hostname: jenkins
     volumes: 
       - home:/var/jenkins_home
@@ -15,4 +18,9 @@ volumes:
   home:
 networks:
   docproc2:
+    external: true
+secrets:
+  jenkins_user:
+    external: true
+  jenkins_pass:
     external: true
