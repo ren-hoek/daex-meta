@@ -38,5 +38,12 @@ node {
                 sh 'deploy_stack redis redis/docker-compose.yml'
             }
         }
+        
+	stage('Update nginx') {
+            dir('stacks') {
+                sh 'add_folder nginx_nginx /etc/nginx/conf.d redis/rqdash.conf'
+		sh 'redeploy_stack nginx nginx/docker-compose.yml'
+            }
+        }
     }
 }
