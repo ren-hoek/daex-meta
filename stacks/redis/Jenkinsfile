@@ -1,36 +1,42 @@
 node {
-    stage('Cloning daex-meta') {
-        git url: 'http://gitlab/daex/daex-meta.git'
-    }
-    
-    stage('pull redis') {
-        dir('stacks') {
-            sh 'pull_image redis:latest'
-            sh 'tag_image redis:latest docker.service:5000/redis'
-        }
-    }
-    
-    stage('build rqdash') {
-        dir('stacks') {
-            sh 'build_image docker.service:5000/daex-meta/rqdash redis/'
-        }
-    }
-    
-    stage('push redis') {
-        dir('stacks') {
-            sh 'push_image docker.service:5000/redis'
-        }
-    }
+    withCredentials([
+        string(credentialsId: 'port_user', variable: 'PORT_USER')
+        ,string(credentialsId: 'port_pass', variable: 'PORT_PASS')
+    ]) {
 
-    stage('push rqdash') {
-        dir('stacks') {
-            sh 'push_image docker.service:5000/daex-meta/rqdash'
-        }
-    }
+    	stage('Cloning daex-meta') {
+        	git url: 'http://gitlab/daex/daex-meta.git'
+    	}
     
-    stage('deploy redis') {
-        dir('stacks') {
-             sh './deploy_stack.py redis redis/docker-compose.yml'
-       }
+    	stage('pull redis') {
+            dir('stacks') {
+        	sh 'pull_image redis:latest'
+                sh 'tag_image redis:latest docker.service:5000/redis'
+            }
+        }
+    
+        stage('build rqdash') {
+            dir('stacks') {
+                sh 'build_image docker.service:5000/daex-meta/rqdash redis/'
+            }
+        }
+    
+        stage('push redis') {
+            dir('stacks') {
+                sh 'push_image docker.service:5000/redis'
+            }
+        }
+
+        stage('push rqdash') {
+            dir('stacks') {
+                sh 'push_image docker.service:5000/daex-meta/rqdash'
+            }
+        }
+    
+        stage('deploy redis') {
+            dir('stacks') {
+                sh './deploy_stack.py redis redis/docker-compose.yml'
+            }
+        }
     }
 }
