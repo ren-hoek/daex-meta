@@ -4,9 +4,7 @@ node {
     }
 
    withCredentials([string(credentialsId: 'port_user', variable: 'PORT_U')]) {
-	sh 'export PORT_USER=$PORT_U'
-	sh 'echo $PORT_USER'
-  
+	sh 'echo $PORT_U'
    }
 
     stage('Build Redis Stack') {
