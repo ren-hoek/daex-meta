@@ -3,6 +3,12 @@ node {
         git credentialsId: 'gitlab', url: 'http://gitlab/gavin/daex-meta.git'
     }
 
+   withCredentials([string(credentialsId: 'port_user', variable: 'PORT_U')]) {
+	sh 'export PORT_USER=$PORT_U'
+	sh 'echo $PORT_USER'
+  
+   }
+
     stage('Build Redis Stack') {
         dir('stacks/redis') {
             redis = docker.image("redis").pull()
