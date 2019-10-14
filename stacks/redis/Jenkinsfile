@@ -35,7 +35,7 @@ node {
     
         stage('deploy redis') {
             dir('stacks') {
-                sh './deploy_stack.py redis redis/docker-compose.yml'
+                sh 'deploy_stack redis redis/docker-compose.yml'
             }
         }
     }
