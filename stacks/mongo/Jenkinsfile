@@ -1,37 +1,50 @@
 node {
-    stage('cp') {
-        sh 'cp -r /var/jenkins_home/daex-meta/* .'
-    }
+    withCredentials([
+        string(credentialsId: 'port_user', variable: 'PORT_USER')
+        ,string(credentialsId: 'port_pass', variable: 'PORT_PASS')
+    ]) {
+
+    	stage('Cloning daex-meta') {
+            git url: 'http://gitlab/daex/daex-meta.git'
+    	}
     
-    stage('pull mongo') {
-        dir('stacks') {
-            sh './pull_image.py mongo:latest'
-            sh './tag_image.py mongo:latest docker.service:5000/mongo'
+    	stage('Pull mongo') {
+            dir('stacks') {
+            	sh 'pull_image mongo:latest'
+            	sh 'tag_image mongo:latest docker.service:5000/mongo'
+            }
         }
-    }
+        
+    	stage('Push mongo') {
+            dir('stacks') {
+            	sh 'push_image docker.service:5000/mongo'
+            }
+    	}
 
-    stage('pull mongo-express') {
-        dir('stacks') {
-            sh './pull_image.py mongo-express:latest'
-            sh './tag_image.py mongo-express:latest docker.service:5000/mongo-express'
-        }
-    }
-    
-    stage('push mongo') {
-        dir('stacks') {
-            sh './push_image.py docker.service:5000/mongo'
-        }
-    }
+    	stage('Pull mongo-express') {
+            dir('stacks') {
+            	sh 'pull_image mongo-express:latest'
+            	sh 'tag_image mongo-express:latest docker.service:5000/mongo-express'
+            }
+    	}
 
-    stage('push mongo-express') {
-        dir('stacks') {
-            sh './push_image.py docker.service:5000/mongo-express'
+        stage('Push mongo-express') {
+            dir('stacks') {
+                sh 'push_image docker.service:5000/mongo-express'
+            }
         }
-    }
 
-    stage('deploy mongo') {
-        dir('stacks') {
-             sh './deploy_stack.py mongo mongo/docker-compose.yml'
-       }
+        stage('Deploy mongo') {
+            dir('stacks') {
+                sh 'deploy_stack mongo mongo/docker-compose.yml'
+            }
+        }
+
+	stage('Update nginx') {
+            dir('stacks') {
+                sh 'add_folder nginx_nginx /etc/nginx/conf.d mongo/mongo.conf'
+		sh 'redeploy_stack nginx nginx/docker-compose.yml'
+            }
+        }
     }
 }
