@@ -8,9 +8,8 @@ RUN yum install -y epel-release unixODBC unixODBC-devel libxml2-devel libcurl-de
                    wget zeromq-devel protobuf-devel v8-devel jq-devel ImageMagick-c++-devel mysql-devel gdal-python gdal-devel \
                    mapserver mapserver-python libxml2 libxml2-python python-lxml python-pip python-devel gcc gsl gsl-devel git ncurses-devel tmux
 RUN yum -y install python36u python36u-pip python36u-devel && \
-    rm /bin/pip && ln -s /bin/pip3.6 /bin/pip && \
-    pip install --no-cache-dir -U pip && \
-    pip install awscli --upgrade
+    pip3 install --no-cache-dir -U pip
+RUN pip3 install awscli --upgrade
 RUN git clone https://github.com/vim/vim && cd vim && \
     ./configure --prefix=/usr --with-features=huge --enable-multibyte --enable-cscope\
 	--with-python3-config-dir=/usr/lib/python3.6/config --enable-python3interp=yes \
