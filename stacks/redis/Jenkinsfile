@@ -10,26 +10,26 @@ node {
     
     	stage('pull redis') {
             dir('stacks') {
-        	sh 'pull_image redis:latest'
-                sh 'tag_image redis:latest docker.service:5000/redis'
-            }
-        }
-    
-        stage('build rqdash') {
-            dir('stacks') {
-                sh 'build_image docker.service:5000/daex-meta/rqdash redis/'
+        	sh 'docker pull redis:latest'
+                sh 'docker tag redis:latest docker.service:5000/redis'
             }
         }
     
         stage('push redis') {
             dir('stacks') {
-                sh 'push_image docker.service:5000/redis'
+                sh 'docker push docker.service:5000/redis:latest'
             }
         }
 
+        stage('build rqdash') {
+            dir('stacks/redis') {
+                sh 'docker build -t docker.service:5000/daex-meta/rqdash .'
+            }
+        }
+    
         stage('push rqdash') {
             dir('stacks') {
-                sh 'push_image docker.service:5000/daex-meta/rqdash'
+                sh 'docker push docker.service:5000/daex-meta/rqdash:latest'
             }
         }
     
@@ -45,5 +45,6 @@ node {
 		sh 'redeploy_stack nginx nginx/docker-compose.yml'
             }
         }
+
     }
 }

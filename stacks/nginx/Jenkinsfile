@@ -1,31 +1,38 @@
 node {
-    stage('cp') {
-        sh 'cp -r /var/jenkins_home/daex-meta/* .'
-    }
-    
-    stage('build nginx') {
-        dir('stacks') {
-            sh './build_image.py docker.service:5000/daex-meta/nginx nginx/'
-        }
-    }
-    
-    stage('push nginx') {
-        dir('stacks') {
-            sh './push_image.py docker.service:5000/daex-meta/nginx'
-        }
-    }
+    withCredentials([
+        string(credentialsId: 'port_user', variable: 'PORT_USER')
+        ,string(credentialsId: 'port_pass', variable: 'PORT_PASS')
+    ]) {
 
-    stage('deploy nginx') {
-        dir('stacks') {
-            sh './deploy_stack.py nginx nginx/docker-compose.yml'
+    	stage('Cloning daex-meta') {
+        	git url: 'http://gitlab/daex/daex-meta.git'
+    	}
+    
+    	stage('Build nginx') {
+            dir('stacks/nginx') {
+        	sh 'docker build -t docker.service:5000/daex-meta/nginx .'
+            }
         }
-    }
+    
+        stage('Push nginx') {
+            dir('stacks') {
+                sh 'docker push docker.service:5000/nginx:latest'
+            }
+        }
 
-    stage('Add conf and html') {
-        dir('stacks') {
-            sh './add_folder.py nginx_nginx /etc/nginx nginx/nginx'
-            sh './add_folder.py nginx_nginx /usr/share/nginx/html nginx/html'
-            sh './redeploy_stack.py nginx nginx/docker-compose.yml'
+        stage('Deploy nginx') {
+            dir('stacks') {
+                sh 'deploy_stack nginx nginx/docker-compose.yml'
+            }
         }
+        
+	stage('Update nginx') {
+            dir('stacks') {
+                sh 'add_folder nginx_nginx /etc/nginx nginx/nginx/'
+                sh 'add_folder nginx_nginx /usr/share/nginx/html nginx/html/'
+		sh 'redeploy_stack nginx nginx/docker-compose.yml'
+            }
+        }
+
     }
 }

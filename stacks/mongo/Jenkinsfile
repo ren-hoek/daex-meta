@@ -10,27 +10,27 @@ node {
     
     	stage('Pull mongo') {
             dir('stacks') {
-            	sh 'pull_image mongo:latest'
-            	sh 'tag_image mongo:latest docker.service:5000/mongo'
+            	sh 'docker pull mongo:latest'
+            	sh 'docker tag  mongo:latest docker.service:5000/mongo:latest'
             }
         }
         
     	stage('Push mongo') {
             dir('stacks') {
-            	sh 'push_image docker.service:5000/mongo'
+            	sh 'docker push docker.service:5000/mongo'
             }
     	}
 
     	stage('Pull mongo-express') {
             dir('stacks') {
-            	sh 'pull_image mongo-express:latest'
-            	sh 'tag_image mongo-express:latest docker.service:5000/mongo-express'
+            	sh 'docker pull mongo-express:latest'
+            	sh 'docker tag mongo-express:latest docker.service:5000/mongo-express:latest'
             }
     	}
 
         stage('Push mongo-express') {
             dir('stacks') {
-                sh 'push_image docker.service:5000/mongo-express'
+                sh 'docker push docker.service:5000/mongo-express:latest'
             }
         }
 
@@ -46,5 +46,6 @@ node {
 		sh 'redeploy_stack nginx nginx/docker-compose.yml'
             }
         }
+
     }
 }

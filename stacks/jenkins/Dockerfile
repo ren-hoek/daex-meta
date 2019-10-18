@@ -1,13 +1,14 @@
 FROM jenkins/jenkins:lts-alpine
 USER root
-RUN apk add --no-cache --update python3 && \
-     pip3 install -U pip && \
-     pip3 install -i https://test.pypi.org/simple/ pyport
+RUN apk add --no-cache --update python3 docker && \
+     pip3 install -U pip
+RUN  pip3 install -U -i https://test.pypi.org/simple/ pyport
+RUN addgroup jenkins ping
 
 USER jenkins
 
 # install jenkins plugins
-RUN /usr/local/bin/install-plugins.sh git workflow-aggregator
+RUN /usr/local/bin/install-plugins.sh git workflow-aggregator docker-workflow
 
 # allows to skip Jenkins setup wizard
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
