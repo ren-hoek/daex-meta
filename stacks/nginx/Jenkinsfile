@@ -16,7 +16,7 @@ node {
     
         stage('Push nginx') {
             dir('stacks') {
-                sh 'docker push docker.service:5000/nginx:latest'
+                sh 'docker push docker.service:5000/daex-meta/nginx:latest'
             }
         }
 

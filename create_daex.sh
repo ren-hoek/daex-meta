@@ -18,15 +18,18 @@ cd ../
 init_admin password localhost
 
 # Create and deploy registry
-pull_image registry:2 localhost
+docker pull registry:2 localhost
 deploy_stack registry registry/docker-compose.yml localhost
 
 # Create and deploy Gitlab
-build_image docker.service:5000/daex-meta/gitlab gitlab/ localhost
+cd gitlab
+docker build -t docker.service:5000/daex-meta/gitlab .
 deploy_stack gitlab gitlab/docker-compose.yml localhost
+cd ..
 
 # Set up Jenkins
-build_image docker.service:5000/daex-meta/jenkins jenkins/ localhost
+cd jenkins
+docker build -t docker.service:5000/daex-meta/jenkins .
 deploy_stack jenkins jenkins/docker-compose.yml localhost
 
 # Create and deploy Nginx
