@@ -1,0 +1,61 @@
+version: '3.6'
+services:
+  rstudio:
+    image: docker.service:5000/daex-meta/rstudio:ldap
+    deploy:
+      placement:
+        constraints:
+          - node.labels.daex == true      
+    hostname: rstudio 
+    volumes:
+      - type: bind
+        source: /sys/fs/cgroup
+        target: /sys/fs/cgroup
+        read_only: true
+      - type: volume
+        source: home
+        target: /home
+      - type: tmpfs
+        target: /run
+    networks:
+      - docproc2
+  jupyter:
+    image: docker.service:5000/daex-meta/jupyterhub:ldap
+    deploy:
+      placement:
+        constraints:
+          - node.labels.daex == true      
+    hostname: jupyterhub
+    volumes:
+      - type: bind
+        source: /sys/fs/cgroup
+        target: /sys/fs/cgroup
+        read_only: true
+      - type: volume
+        source: home
+        target: /home
+      - type: tmpfs
+        target: /run
+    networks:
+      - docproc2
+    ports:
+      - 8000:8000
+  shiny:
+    image: docker.service:5000/daex-meta/shiny:ldap
+    deploy:
+      placement:
+        constraints:
+          - node.labels.daex == true      
+    hostname: shiny
+    volumes:
+     - apps:/srv/shiny-server/
+     - logs:/var/log/shiny-server/
+    networks:
+      - docproc2
+volumes:
+  home:
+  apps:
+  logs:
+networks:
+  docproc2:
+    external: true

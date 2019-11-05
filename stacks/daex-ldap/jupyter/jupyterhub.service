@@ -1,0 +1,10 @@
+[Unit]
+Description=Jupyterhub
+After=init-ldap.service
+Wants=init-ldap.service
+
+[Service]
+ExecStart=/bin/bash /usr/bin/init-jupyter.sh
+
+[Install]
+WantedBy=multi-user.target

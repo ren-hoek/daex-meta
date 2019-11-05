@@ -1,0 +1,5 @@
+--unattended
+--ds-password=password
+--admin-password=password
+--realm=DAEX.LAN
+--no-ntp
