@@ -1,0 +1,4 @@
+yum install -y openldap-clients nss-pam-ldapd authconfig
+authconfig --enableldap --enableldapauth --ldapserver=ipa.daex.lan --ldapbasedn="dc=daex,dc=lan" --enablemkhomedir --update
+docker cp cacerts.pem ldap:/etc/openldap/certs/cert.pem
+authconfig --enableldaptls --update

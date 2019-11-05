@@ -8,7 +8,7 @@ RUN addgroup jenkins ping
 USER jenkins
 
 # install jenkins plugins
-RUN /usr/local/bin/install-plugins.sh git workflow-aggregator docker-workflow
+RUN /usr/local/bin/install-plugins.sh git ldap workflow-aggregator docker-workflow
 
 # allows to skip Jenkins setup wizard
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false

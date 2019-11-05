@@ -1,0 +1,15 @@
+[Unit]
+Description=RStudio Server
+After=init-ldap.service
+Wants=init-ldap.service
+
+[Service]
+Type=forking
+PIDFile=/var/run/rstudio-server.pid
+ExecStart=/usr/lib/rstudio-server/bin/rserver
+ExecStop=/usr/bin/killall -TERM rserver
+KillMode=none
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

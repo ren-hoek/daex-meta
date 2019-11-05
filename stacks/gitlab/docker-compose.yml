@@ -1,7 +1,7 @@
 version: '3'
 services:
   gitlab:
-    image: docker.service:5000/daex-meta/gitlab
+    image: docker.service:5000/daex-meta/gitlab:latest
     deploy:
       placement:
         constraints:

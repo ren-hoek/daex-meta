@@ -1,0 +1,11 @@
+[Unit]
+Description=Set up LDAP.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=forking
+ExecStart=/bin/bash /usr/bin/fork-ldap.sh
+
+[Install]
+WantedBy=multi-user.target

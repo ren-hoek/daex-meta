@@ -252,52 +252,27 @@
 ###! **Be careful not to break the indentation in the ldap_servers block. It is
 ###!   in yaml format and the spaces must be retained. Using tabs will not work.**
 
-# gitlab_rails['ldap_enabled'] = false
+gitlab_rails['ldap_enabled'] = true
 
-###! **remember to close this block with 'EOS' below**
-# gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
-#   main: # 'main' is the GitLab 'provider ID' of this LDAP server
-#     label: 'LDAP'
-#     host: '_your_ldap_server'
-#     port: 389
-#     uid: 'sAMAccountName'
-#     bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
-#     password: '_the_password_of_the_bind_user'
-#     encryption: 'plain' # "start_tls" or "simple_tls" or "plain"
-#     verify_certificates: true
-#     smartcard_auth: false
-#     active_directory: true
-#     allow_username_or_email_login: false
-#     lowercase_usernames: false
-#     block_auto_created_users: false
-#     base: ''
-#     user_filter: ''
-#     ## EE only
-#     group_base: ''
-#     admin_group: ''
-#     sync_ssh_keys: false
-#
-#   secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
-#     label: 'LDAP'
-#     host: '_your_ldap_server'
-#     port: 389
-#     uid: 'sAMAccountName'
-#     bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
-#     password: '_the_password_of_the_bind_user'
-#     encryption: 'plain' # "start_tls" or "simple_tls" or "plain"
-#     verify_certificates: true
-#     smartcard_auth: false
-#     active_directory: true
-#     allow_username_or_email_login: false
-#     lowercase_usernames: false
-#     block_auto_created_users: false
-#     base: ''
-#     user_filter: ''
-#     ## EE only
-#     group_base: ''
-#     admin_group: ''
-#     sync_ssh_keys: false
-# EOS
+#! **remember to close this block with 'EOS' below**
+gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+  main: # 'main' is the GitLab 'provider ID' of this LDAP server
+    label: 'LDAP'
+    host: 'ipa.daex.lan'
+    port: 389
+    uid: 'uid'
+    bind_dn: 'uid=gitlab,cn=users,cn=accounts,dc=daex,dc=lan'
+    password: 'gitlab'
+    encryption: 'plain'
+    verify_certificates: false
+    base: 'cn=accounts,dc=daex,dc=lan'
+    attributes:
+      username: ['uid']
+      email: ['mail']
+      name: 'displayName'
+      first_name: 'givenName'
+      last_name: 'sn'
+EOS
 
 ### Smartcard authentication settings
 ###! Docs: https://docs.gitlab.com/ee/administration/auth/smartcard.html

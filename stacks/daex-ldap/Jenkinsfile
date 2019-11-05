@@ -1,0 +1,73 @@
+node {
+
+    withCredentials([
+        string(credentialsId: 'port_user', variable: 'PORT_USER')
+        ,string(credentialsId: 'port_pass', variable: 'PORT_PASS')
+    ]) {
+
+    	stage('Cloning daex-meta') {
+            git url: 'http://gitlab/daex/daex-meta.git'
+    	}
+
+    	stage('Build Daex: daexbase') {
+            dir('stacks/daex/daexbase') {
+             	sh 'docker build -t docker.service:5000/daex-meta/daexbase .'
+            }
+    	}
+    
+    	stage('Build Daex: jupyterhub') {
+            dir('stacks/daex/jupyterhub') {
+            	sh 'docker build -t docker.service:5000/daex-meta/jupyterhub .'
+            }
+    	}
+    
+   	stage('Push Daex: jupyterhub') {
+            dir('stacks') {
+            	sh 'docker push docker.service:5000/daex-meta/jupyterhub'
+            }
+    	}
+    
+    	stage('Build Daex: rbase') {
+            dir('stacks/daex/rbase') {
+            	sh 'docker build -t docker.service:5000/daex-meta/rbase .'
+            }
+    	}
+    
+    	stage('Build Daex: rstudio') {
+            dir('stacks/daex/rstudio') {
+            	sh 'docker build -t docker.service:5000/daex-meta/rstudio .'
+            }
+    	}	
+
+    	stage('Push Daex: rstudio') {
+            dir('stacks') {
+            	sh 'docker push docker.service:5000/daex-meta/rstudio'
+            }
+    	}	
+    
+    	stage('Build Daex: shiny') {
+            dir('stacks/daex/shiny') {
+            	sh 'docker build -t docker.service:5000/daex-meta/shiny .'
+            }
+    	}
+    
+        stage('Push Daex: shiny') {
+            dir('stacks') {
+            	sh 'docker push docker.service:5000/daex-meta/shiny'
+            }
+        }
+
+    	stage('Deploy Daex') {
+            dir('stacks') {
+            	sh 'deploy_stack daex daex/docker-compose.yml'
+       	    }
+    	}
+
+	stage('Update nginx') {
+            dir('stacks') {
+                sh 'add_folder nginx_nginx /etc/nginx/conf.d daex/daex.conf'
+		sh 'redeploy_stack nginx nginx/docker-compose.yml'
+            }
+        }
+    }
+}
